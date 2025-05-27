@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Enter OTP - DocLockBox</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+        img.icon {
+            width: 128px;
+            height: 128px;
+            margin-bottom: 20px;
+        }
+        h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        input {
+            padding: 10px;
+            font-size: 16px;
+            margin: 10px 0;
+            width: 200px;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 12px 30px;
+            font-size: 16px;
+            background-color: #2a7de1;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #1f5fb3;
+        }
+        button:disabled {
+            background-color: #b0c8e8;
+            cursor: not-allowed;
+        }
+        .message {
+            margin-top: 20px;
+            font-size: 16px;
+            max-width: 300px;
+        }
+        .error {
+            color: red;
+        }
+        .loader {
+            margin-top: 20px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #2a7de1;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <img src="icon_128x128.png" alt="DocLockBox Icon" class="icon">
+    <h2>Enter Your 6-Digit OTP</h2>
+    <input type="text" id="otp-input" placeholder="123456" maxlength="6" inputmode="numeric" pattern="\d*">
+    <button id="download-btn" disabled>Download Document</button>
+    <div class="message" id="status-message"></div>
+    <div class="loader" id="loader" style="display: none;"></div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('token');
+        const otpInput = document.getElementById('otp-input');
+        const downloadBtn = document.getElementById('download-btn');
+        const statusMessage = document.getElementById('status-message');
+        const loader = document.getElementById('loader');
+
+        // Allow only numbers and limit to 6 digits
+        otpInput.addEventListener('input', () => {
+            otpInput.value = otpInput.value.replace(/[^0-9]/g, '').slice(0, 6);
+            downloadBtn.disabled = otpInput.value.length !== 6;
+        });
+
+        downloadBtn.addEventListener('click', () => {
+            const otp = otpInput.value.trim();
+
+            if (otp.length !== 6) {
+                statusMessage.textContent = 'Please enter a valid 6-digit OTP.';
+                statusMessage.classList.add('error');
+                return;
+            }
+
+            downloadBtn.disabled = true;
+            statusMessage.textContent = 'Verifying OTP... Please wait.';
+            statusMessage.classList.remove('error');
+            loader.style.display = 'block';
+
+            const downloadUrl = `https://api.doclockbox.app/download?token=${encodeURIComponent(token)}&otp=${encodeURIComponent(otp)}`;
+
+            fetch(downloadUrl, { method: 'POST' })
+                .then(response => {
+                    loader.style.display = 'none';
+                    if (response.ok) {
+                        return response.json();
+                    } else if (response.status === 401) {
+                        // Invalid OTP
+                        throw new Error('Invalid OTP. Please try again.');
+                    } else if (response.status === 410) {
+                        // OTP expired → redirect to verify.html
+                        window.location.href = `https://www.doclockbox.app/verify.html?token=${encodeURIComponent(token)}`;
+                        throw new Error('OTP expired. Redirecting to verification page.');
+                    } else if (response.status === 403) {
+                        // Download link expired
+                        throw new Error('Download link expired. Please request a new sharing link.');
+                    } else {
+                        throw new Error(`Unexpected error (status ${response.status}).`);
+                    }
+                })
+                .then(data => {
+                    // Redirect to the signed download URL
+                    window.location.href = data.download_url;
+                })
+                .catch(error => {
+                    console.error(error);
+                    statusMessage.textContent = error.message;
+                    statusMessage.classList.add('error');
+                    downloadBtn.disabled = false;
+                });
+        });
+    </script>
+</body>
+</html>

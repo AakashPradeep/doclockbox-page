@@ -14,73 +14,102 @@
             background-color: #f9f9f9;
             color: #333;
             margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+        img.icon {
+            width: 128px;
+            height: 128px;
+            margin-bottom: 20px;
         }
         h1 {
-            font-size: 24px;
+            font-size: 28px;
             margin-bottom: 20px;
         }
         button {
-            padding: 12px 24px;
+            padding: 12px 30px;
             font-size: 16px;
             background-color: #2a7de1;
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 5px;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
         button:hover {
             background-color: #1f5fb3;
         }
+        button:disabled {
+            background-color: #b0c8e8;
+            cursor: not-allowed;
+        }
         .message {
             margin-top: 20px;
             font-size: 16px;
+            max-width: 300px;
+        }
+        .loader {
+            margin-top: 20px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #2a7de1;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
+    <img src="icon_128x128.png" alt="DocLockBox Icon" class="icon">
     <h1>Verify Your Access to DocLockBox</h1>
     <button id="verify-btn">Verify Yourself</button>
     <div class="message" id="status-message"></div>
+    <div class="loader" id="loader" style="display: none;"></div>
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const token = urlParams.get('token');
-        const statusMessage = document.getElementById('status-message');
         const verifyBtn = document.getElementById('verify-btn');
+        const statusMessage = document.getElementById('status-message');
+        const loader = document.getElementById('loader');
 
         if (!token) {
-            statusMessage.textContent = 'Invalid or missing token.';
+            statusMessage.textContent = 'Invalid or missing token. Please check your link.';
             verifyBtn.disabled = true;
         }
 
         verifyBtn.addEventListener('click', () => {
+            verifyBtn.disabled = true;
             statusMessage.textContent = 'Verifying... Please wait.';
+            loader.style.display = 'block';
 
             fetch(`https://api.doclockbox.app/verify?token=${encodeURIComponent(token)}`, {
                 method: 'POST'
             })
             .then(response => {
+                loader.style.display = 'none';
                 if (!response.ok) {
-                    throw new Error('Verification failed.');
+                    throw new Error(`HTTP error! Status: ${response.status}`);
                 }
                 return response.json();
             })
             .then(data => {
-                if (data.download_url) {
-                    statusMessage.innerHTML = `
-                        Verification successful! 
-                        <br><br>
-                        <a href="${data.download_url}" target="_blank">
-                            <button>Download Your File</button>
-                        </a>
-                    `;
+                if (data.success) {
+                    window.location.href = `https://www.doclockbox.app/verify_otp.html?token=${encodeURIComponent(token)}`;
                 } else {
-                    statusMessage.textContent = 'Verification succeeded, but no download link was provided.';
+                    statusMessage.textContent = 'Verification failed. Please check your link or contact support.';
+                    verifyBtn.disabled = false;
                 }
             })
             .catch(error => {
                 console.error(error);
-                statusMessage.textContent = 'Verification failed. Please check your link or contact support.';
+                loader.style.display = 'none';
+                statusMessage.textContent = 'An error occurred during verification. Please try again later.';
+                verifyBtn.disabled = false;
             });
         });
     </script>
