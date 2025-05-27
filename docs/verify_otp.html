@@ -127,6 +127,7 @@
                         throw new Error('OTP expired. Redirecting to verification page.');
                     } else if (response.status === 403) {
                         // Download link expired
+                        window.location.href = `https://www.doclockbox.app/verify.html?token=${encodeURIComponent(token)}`;
                         throw new Error('Download link expired. Please request a new sharing link.');
                     } else {
                         throw new Error(`Unexpected error (status ${response.status}).`);
