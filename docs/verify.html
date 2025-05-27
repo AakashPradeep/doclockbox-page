@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Verify Your Access - DocLockBox</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            margin: 0;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 12px 24px;
+            font-size: 16px;
+            background-color: #2a7de1;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #1f5fb3;
+        }
+        .message {
+            margin-top: 20px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Verify Your Access to DocLockBox</h1>
+    <button id="verify-btn">Verify Yourself</button>
+    <div class="message" id="status-message"></div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('token');
+        const statusMessage = document.getElementById('status-message');
+        const verifyBtn = document.getElementById('verify-btn');
+
+        if (!token) {
+            statusMessage.textContent = 'Invalid or missing token.';
+            verifyBtn.disabled = true;
+        }
+
+        verifyBtn.addEventListener('click', () => {
+            statusMessage.textContent = 'Verifying... Please wait.';
+
+            fetch(`https://api.doclockbox.app/verify?token=${encodeURIComponent(token)}`, {
+                method: 'POST'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Verification failed.');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.download_url) {
+                    statusMessage.innerHTML = `
+                        Verification successful! 
+                        <br><br>
+                        <a href="${data.download_url}" target="_blank">
+                            <button>Download Your File</button>
+                        </a>
+                    `;
+                } else {
+                    statusMessage.textContent = 'Verification succeeded, but no download link was provided.';
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                statusMessage.textContent = 'Verification failed. Please check your link or contact support.';
+            });
+        });
+    </script>
+</body>
+</html>
