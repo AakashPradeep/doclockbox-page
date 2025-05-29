@@ -101,14 +101,33 @@
                 if (data.success) {
                     window.location.href = `https://www.doclockbox.app/verify_otp.html?token=${encodeURIComponent(token)}`;
                 } else {
-                    statusMessage.textContent = 'Verification failed. Please check your link or contact support .';
+                    statusMessage.innerHTML = `
+                        <div style="padding: 10px; background-color: #ffe5e5; color: #b00020; border: 1px solid #b00020; border-radius: 5px; margin-top: 10px;">
+                            <strong>⚠️ Verification failed.</strong><br>
+                            Please check your link or contact support.
+                        </div>
+                    `;
                     verifyBtn.disabled = false;
                 }
             })
             .catch(error => {
-                console.error('Verification error:', error);
-                const errorMsg = error.message || error.toString();
-                showError(`❌ Verification failed: ${errorMsg}`);
+                console.error(error);
+                loader.style.display = 'none';
+                statusMessage.innerHTML = `
+                    <div style="padding: 10px; background-color: #ffe5e5; color: #b00020; border: 1px solid #b00020; border-radius: 5px; margin-top: 10px;">
+                        <strong>⚠️ We were unable to complete the verification.</strong><br>
+                        This may be due to:
+                        <ul style="text-align: left; margin: 10px 0; padding-left: 20px;">
+                            <li>⏰ The secure link has expired.</li>
+                            <li>⚠️ The maximum number of download attempts has been reached.</li>
+                            <li>❌ The link is invalid or has been corrupted.</li>
+                            <li>💥 A temporary server issue — please try again later.</li>
+                        </ul>
+                        <div style="margin-top: 10px; font-size: 14px; color: #555;">
+                            Error details: ${error.message}
+                        </div>
+                    </div>
+                `;
                 verifyBtn.disabled = false;
             });
         });
