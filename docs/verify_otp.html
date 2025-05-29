@@ -106,43 +106,43 @@
         }
 
         downloadBtn.disabled = true;
-        statusMessage.textContent = 'Verifying OTP and downloading...';
+        statusMessage.textContent = 'Verifying OTP and preparing download...';
         statusMessage.classList.remove('error');
         loader.style.display = 'block';
 
-        const downloadUrl = `https://api.doclockbox.app/download?otp=${encodeURIComponent(otp)}&token=${encodeURIComponent(token)}`;
+        const apiUrl = `https://api.doclockbox.app/download?otp=${encodeURIComponent(otp)}&token=${encodeURIComponent(token)}`;
 
-        fetch(downloadUrl)
+        fetch(apiUrl)
             .then(response => {
                 loader.style.display = 'none';
 
                 if (!response.ok) {
-                    throw new Error(`HTTP error ${response.status}`);
-                }
-
-                const contentDisposition = response.headers.get('Content-Disposition');
-                let filename = 'downloaded_file';
-                if (contentDisposition && contentDisposition.includes('filename=')) {
-                    const match = contentDisposition.match(/filename="?([^"]+)"?/);
-                    if (match && match[1]) {
-                        filename = match[1];
+                    if (response.status === 401) {
+                        throw new Error('Invalid OTP. Please try again.');
+                    } else if (response.status === 410) {
+                        throw new Error('OTP expired. Please re-verify.');
+                    } else if (response.status === 429) {
+                        throw new Error('Download limit reached.');
+                    } else {
+                        throw new Error(`Unexpected error (status ${response.status}).`);
                     }
                 }
 
-                return response.blob().then(blob => ({ blob, filename }));
+                return response.json();
             })
-            .then(({ blob, filename }) => {
-                const link = document.createElement('a');
-                link.href = window.URL.createObjectURL(blob);
-                link.download = filename;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
+            .then(data => {
+                if (!data.download_url) {
+                    throw new Error('Download URL not received. Please try again.');
+                }
+
+                // Redirect browser to the signed S3 URL
+                window.location.href = data.download_url;
+
                 statusMessage.textContent = 'Download started!';
             })
             .catch(error => {
                 console.error('Download failed:', error);
-                statusMessage.textContent = 'Download failed. Please check your OTP or try again.';
+                statusMessage.textContent = error.message;
                 statusMessage.classList.add('error');
                 downloadBtn.disabled = false;
             });
