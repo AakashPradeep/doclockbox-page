@@ -91,7 +91,6 @@
     const statusMessage = document.getElementById('status-message');
     const loader = document.getElementById('loader');
 
-    // Allow only numbers and limit to 6 digits
     otpInput.addEventListener('input', () => {
         otpInput.value = otpInput.value.replace(/[^0-9]/g, '').slice(0, 6);
         downloadBtn.disabled = otpInput.value.length !== 6;
@@ -107,41 +106,47 @@
         }
 
         downloadBtn.disabled = true;
-        statusMessage.textContent = 'Verifying OTP... Please wait.';
+        statusMessage.textContent = 'Verifying OTP and downloading...';
         statusMessage.classList.remove('error');
         loader.style.display = 'block';
 
-        // ✅ Order query params as ?otp=...&token=...
         const downloadUrl = `https://api.doclockbox.app/download?otp=${encodeURIComponent(otp)}&token=${encodeURIComponent(token)}`;
 
-        fetch(downloadUrl, {
-            method: 'GET'
-        })
-        .then(response => {
-            loader.style.display = 'none';
-            if (response.ok) {
-                return response.json();
-            } else if (response.status === 401) {
-                throw new Error('Invalid OTP. Please try again.');
-            } else if (response.status === 410) {
-                window.location.href = `https://www.doclockbox.app/verify.html?token=${encodeURIComponent(token)}`;
-                throw new Error('OTP expired. Redirecting to verification page.');
-            } else if (response.status === 403) {
-                throw new Error('Download link expired. Please request a new sharing link.');
-            } else {
-                throw new Error(`Unexpected error (status ${response.status}).`);
-            }
-        })
-        .then(data => {
-            window.location.href = data.download_url;
-        })
-        .catch(error => {
-            console.error(error);
-            statusMessage.textContent = error.message;
-            statusMessage.classList.add('error');
-            downloadBtn.disabled = false;
-        });
+        fetch(downloadUrl)
+            .then(response => {
+                loader.style.display = 'none';
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error ${response.status}`);
+                }
+
+                const contentDisposition = response.headers.get('Content-Disposition');
+                let filename = 'downloaded_file';
+                if (contentDisposition && contentDisposition.includes('filename=')) {
+                    const match = contentDisposition.match(/filename="?([^"]+)"?/);
+                    if (match && match[1]) {
+                        filename = match[1];
+                    }
+                }
+
+                return response.blob().then(blob => ({ blob, filename }));
+            })
+            .then(({ blob, filename }) => {
+                const link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = filename;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                statusMessage.textContent = 'Download started!';
+            })
+            .catch(error => {
+                console.error('Download failed:', error);
+                statusMessage.textContent = 'Download failed. Please check your OTP or try again.';
+                statusMessage.classList.add('error');
+                downloadBtn.disabled = false;
+            });
     });
-</script>
+    </script>
 </body>
 </html>
