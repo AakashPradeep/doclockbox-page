@@ -84,65 +84,64 @@
     <div class="loader" id="loader" style="display: none;"></div>
 
     <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const token = urlParams.get('token');
-        const otpInput = document.getElementById('otp-input');
-        const downloadBtn = document.getElementById('download-btn');
-        const statusMessage = document.getElementById('status-message');
-        const loader = document.getElementById('loader');
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+    const otpInput = document.getElementById('otp-input');
+    const downloadBtn = document.getElementById('download-btn');
+    const statusMessage = document.getElementById('status-message');
+    const loader = document.getElementById('loader');
 
-        // Allow only numbers and limit to 6 digits
-        otpInput.addEventListener('input', () => {
-            otpInput.value = otpInput.value.replace(/[^0-9]/g, '').slice(0, 6);
-            downloadBtn.disabled = otpInput.value.length !== 6;
-        });
+    // Allow only numbers and limit to 6 digits
+    otpInput.addEventListener('input', () => {
+        otpInput.value = otpInput.value.replace(/[^0-9]/g, '').slice(0, 6);
+        downloadBtn.disabled = otpInput.value.length !== 6;
+    });
 
-        downloadBtn.addEventListener('click', () => {
-            const otp = otpInput.value.trim();
+    downloadBtn.addEventListener('click', () => {
+        const otp = otpInput.value.trim();
 
-            if (otp.length !== 6) {
-                statusMessage.textContent = 'Please enter a valid 6-digit OTP.';
-                statusMessage.classList.add('error');
-                return;
+        if (otp.length !== 6) {
+            statusMessage.textContent = 'Please enter a valid 6-digit OTP.';
+            statusMessage.classList.add('error');
+            return;
+        }
+
+        downloadBtn.disabled = true;
+        statusMessage.textContent = 'Verifying OTP... Please wait.';
+        statusMessage.classList.remove('error');
+        loader.style.display = 'block';
+
+        // ✅ Order query params as ?otp=...&token=...
+        const downloadUrl = `https://api.doclockbox.app/download?otp=${encodeURIComponent(otp)}&token=${encodeURIComponent(token)}`;
+
+        fetch(downloadUrl, {
+            method: 'GET'
+        })
+        .then(response => {
+            loader.style.display = 'none';
+            if (response.ok) {
+                return response.json();
+            } else if (response.status === 401) {
+                throw new Error('Invalid OTP. Please try again.');
+            } else if (response.status === 410) {
+                window.location.href = `https://www.doclockbox.app/verify.html?token=${encodeURIComponent(token)}`;
+                throw new Error('OTP expired. Redirecting to verification page.');
+            } else if (response.status === 403) {
+                throw new Error('Download link expired. Please request a new sharing link.');
+            } else {
+                throw new Error(`Unexpected error (status ${response.status}).`);
             }
-
-            downloadBtn.disabled = true;
-            statusMessage.textContent = 'Verifying OTP... Please wait.';
-            statusMessage.classList.remove('error');
-            loader.style.display = 'block';
-
-            const downloadUrl = `https://api.doclockbox.app/download`;
-
-            fetch(downloadUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ token: token, otp: otp })
-            })
-            .then(response => {
-                loader.style.display = 'none';
-                if (response.ok) {
-                    return response.json();
-                } else if (response.status === 401) {
-                    throw new Error('Invalid OTP. Please try again.');
-                } else if (response.status === 410) {
-                    window.location.href = `https://www.doclockbox.app/verify.html?token=${encodeURIComponent(token)}`;
-                    throw new Error('OTP expired. Redirecting to verification page.');
-                } else if (response.status === 403) {
-                    throw new Error('Download link expired. Please request a new sharing link.');
-                } else {
-                    throw new Error(`Unexpected error (status ${response.status}).`);
-                }
-            })
-            .then(data => {
-                window.location.href = data.download_url;
-            })
-            .catch(error => {
-                console.error(error);
-                statusMessage.textContent = error.message;
-                statusMessage.classList.add('error');
-                downloadBtn.disabled = false;
-            });
+        })
+        .then(data => {
+            window.location.href = data.download_url;
+        })
+        .catch(error => {
+            console.error(error);
+            statusMessage.textContent = error.message;
+            statusMessage.classList.add('error');
+            downloadBtn.disabled = false;
         });
-    </script>
+    });
+</script>
 </body>
 </html>
