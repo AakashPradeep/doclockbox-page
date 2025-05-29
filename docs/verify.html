@@ -48,6 +48,24 @@
             font-size: 16px;
             max-width: 300px;
         }
+        .error-box {
+            background-color: #ffe0e0;
+            color: #b30000;
+            border: 1px solid #b30000;
+            padding: 10px;
+            margin-top: 20px;
+            max-width: 300px;
+            border-radius: 5px;
+        }
+        .success-box {
+            background-color: #e0ffe0;
+            color: #007300;
+            border: 1px solid #007300;
+            padding: 10px;
+            margin-top: 20px;
+            max-width: 300px;
+            border-radius: 5px;
+        }
         .loader {
             margin-top: 20px;
             border: 4px solid #f3f3f3;
@@ -77,14 +95,32 @@
         const statusMessage = document.getElementById('status-message');
         const loader = document.getElementById('loader');
 
+        function showError(message) {
+            statusMessage.textContent = message;
+            statusMessage.className = 'message error-box';
+            setTimeout(() => {
+                statusMessage.textContent = '';
+                statusMessage.className = 'message';
+            }, 7000); // show for 7 seconds
+        }
+
+        function showSuccess(message) {
+            statusMessage.textContent = message;
+            statusMessage.className = 'message success-box';
+            setTimeout(() => {
+                statusMessage.textContent = '';
+                statusMessage.className = 'message';
+            }, 5000); // show for 5 seconds
+        }
+
         if (!token) {
-            statusMessage.textContent = 'Invalid or missing token. Please check your link.';
+            showError('❌ Invalid or missing token. Please check your link.');
             verifyBtn.disabled = true;
         }
 
         verifyBtn.addEventListener('click', () => {
             verifyBtn.disabled = true;
-            statusMessage.textContent = 'Verifying... Please wait.';
+            showSuccess('🔐 Verifying... Please wait.');
             loader.style.display = 'block';
 
             fetch(`https://api.doclockbox.app/verify?token=${encodeURIComponent(token)}`, {
@@ -93,22 +129,29 @@
             .then(response => {
                 loader.style.display = 'none';
                 if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
+                    if (response.status === 400) throw new Error('⚠️ Bad request. Please check your link.');
+                    if (response.status === 404) throw new Error('❌ Sharing record not found. Please contact the sender.');
+                    if (response.status === 410) throw new Error('⏰ Link expired. Please request a new link.');
+                    if (response.status === 429) throw new Error('⚠️ Download limit reached. Contact sender.');
+                    if (response.status === 500) throw new Error('💥 Server error. Please try again later.');
+                    throw new Error(`🚫 Unexpected error (status ${response.status}).`);
                 }
                 return response.json();
             })
             .then(data => {
                 if (data.success) {
-                    window.location.href = `https://www.doclockbox.app/verify_otp.html?token=${encodeURIComponent(token)}`;
+                    showSuccess('✅ OTP sent! Redirecting to OTP entry...');
+                    setTimeout(() => {
+                        window.location.href = `https://www.doclockbox.app/verify_otp.html?token=${encodeURIComponent(token)}`;
+                    }, 1000);
                 } else {
-                    statusMessage.textContent = 'Verification failed. Please check your link or contact support.';
+                    showError('❌ Verification failed. Please check your link or contact support.');
                     verifyBtn.disabled = false;
                 }
             })
             .catch(error => {
                 console.error(error);
-                loader.style.display = 'none';
-                statusMessage.textContent = 'An error occurred during verification. Please try again later.';
+                showError(error.message);
                 verifyBtn.disabled = false;
             });
         });
