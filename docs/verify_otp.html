@@ -57,8 +57,23 @@
             font-size: 16px;
             max-width: 300px;
         }
-        .error {
-            color: red;
+        .error-box {
+            background-color: #ffe0e0;
+            color: #b30000;
+            border: 1px solid #b30000;
+            padding: 10px;
+            margin-top: 20px;
+            max-width: 300px;
+            border-radius: 5px;
+        }
+        .success-box {
+            background-color: #e0ffe0;
+            color: #007300;
+            border: 1px solid #007300;
+            padding: 10px;
+            margin-top: 20px;
+            max-width: 300px;
+            border-radius: 5px;
         }
         .loader {
             margin-top: 20px;
@@ -68,6 +83,22 @@
             width: 30px;
             height: 30px;
             animation: spin 1s linear infinite;
+        }
+        .progress-bar {
+            width: 300px;
+            height: 20px;
+            border: 1px solid #ccc;
+            margin-top: 20px;
+            position: relative;
+            background-color: #eee;
+            border-radius: 5px;
+        }
+        .progress-bar-fill {
+            background-color: #2a7de1;
+            height: 100%;
+            width: 0%;
+            border-radius: 5px;
+            transition: width 0.2s ease;
         }
         @keyframes spin {
             0% { transform: rotate(0deg); }
@@ -82,6 +113,9 @@
     <button id="download-btn" disabled>Download Document</button>
     <div class="message" id="status-message"></div>
     <div class="loader" id="loader" style="display: none;"></div>
+    <div class="progress-bar" style="display: none;">
+        <div class="progress-bar-fill"></div>
+    </div>
 
     <script>
     const urlParams = new URLSearchParams(window.location.search);
@@ -90,62 +124,113 @@
     const downloadBtn = document.getElementById('download-btn');
     const statusMessage = document.getElementById('status-message');
     const loader = document.getElementById('loader');
+    const progressBar = document.querySelector('.progress-bar');
+    const progressFill = document.querySelector('.progress-bar-fill');
+
+    function showError(message) {
+        statusMessage.textContent = message;
+        statusMessage.className = 'message error-box';
+        setTimeout(() => {
+            statusMessage.textContent = '';
+            statusMessage.className = 'message';
+        }, 5000);
+    }
+
+    function showSuccess(message) {
+        statusMessage.textContent = message;
+        statusMessage.className = 'message success-box';
+        setTimeout(() => {
+            statusMessage.textContent = '';
+            statusMessage.className = 'message';
+        }, 5000);
+    }
 
     otpInput.addEventListener('input', () => {
         otpInput.value = otpInput.value.replace(/[^0-9]/g, '').slice(0, 6);
         downloadBtn.disabled = otpInput.value.length !== 6;
     });
 
-    downloadBtn.addEventListener('click', () => {
+    downloadBtn.addEventListener('click', async () => {
         const otp = otpInput.value.trim();
 
         if (otp.length !== 6) {
-            statusMessage.textContent = 'Please enter a valid 6-digit OTP.';
-            statusMessage.classList.add('error');
+            showError('Please enter a valid 6-digit OTP.');
             return;
         }
 
         downloadBtn.disabled = true;
         statusMessage.textContent = 'Verifying OTP and preparing download...';
-        statusMessage.classList.remove('error');
         loader.style.display = 'block';
+        progressBar.style.display = 'none';
+        progressFill.style.width = '0%';
 
-        const apiUrl = `https://api.doclockbox.app/download?otp=${encodeURIComponent(otp)}&token=${encodeURIComponent(token)}`;
+        try {
+            const apiUrl = `https://api.doclockbox.app/download?otp=${encodeURIComponent(otp)}&token=${encodeURIComponent(token)}`;
+            const response = await fetch(apiUrl);
+            loader.style.display = 'none';
 
-        fetch(apiUrl)
-            .then(response => {
-                loader.style.display = 'none';
+            if (!response.ok) {
+                if (response.status === 401) throw new Error('Invalid OTP. Please try again.');
+                if (response.status === 410) throw new Error('OTP expired. Please re-verify.');
+                if (response.status === 429) throw new Error('Download limit reached.');
+                throw new Error(`Unexpected error (status ${response.status}).`);
+            }
 
-                if (!response.ok) {
-                    if (response.status === 401) {
-                        throw new Error('Invalid OTP. Please try again.');
-                    } else if (response.status === 410) {
-                        throw new Error('OTP expired. Please re-verify.');
-                    } else if (response.status === 429) {
-                        throw new Error('Download limit reached.');
-                    } else {
-                        throw new Error(`Unexpected error (status ${response.status}).`);
-                    }
+            const data = await response.json();
+            if (!data.download_url) throw new Error('Download URL not received. Please try again.');
+
+            statusMessage.textContent = 'Downloading...';
+            progressBar.style.display = 'block';
+
+            const fileResponse = await fetch(data.download_url);
+            if (!fileResponse.ok) throw new Error('Failed to download file.');
+
+            const contentLength = fileResponse.headers.get('Content-Length');
+            const total = contentLength ? parseInt(contentLength, 10) : null;
+
+            const reader = fileResponse.body.getReader();
+            const chunks = [];
+            let received = 0;
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                chunks.push(value);
+                received += value.length;
+                if (total) {
+                    const percent = Math.round((received / total) * 100);
+                    progressFill.style.width = `${percent}%`;
                 }
+            }
 
-                return response.json();
-            })
-            .then(data => {
-                if (!data.download_url) {
-                    throw new Error('Download URL not received. Please try again.');
+            const blob = new Blob(chunks);
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+
+            // Infer filename or fallback
+            let filename = 'downloaded_file';
+            const contentDisposition = fileResponse.headers.get('Content-Disposition');
+            if (contentDisposition && contentDisposition.includes('filename=')) {
+                const match = contentDisposition.match(/filename="?([^"]+)"?/);
+                if (match && match[1]) {
+                    filename = match[1];
                 }
+            }
 
-                // Redirect browser to the signed S3 URL
-                window.location.href = data.download_url;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
 
-                statusMessage.textContent = 'Download started!';
-            })
-            .catch(error => {
-                console.error('Download failed:', error);
-                statusMessage.textContent = error.message;
-                statusMessage.classList.add('error');
-                downloadBtn.disabled = false;
-            });
+            showSuccess('Download complete!');
+        } catch (error) {
+            console.error('Download failed:', error);
+            showError(error.message);
+            downloadBtn.disabled = false;
+            progressBar.style.display = 'none';
+        }
     });
     </script>
 </body>
