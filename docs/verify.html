@@ -108,7 +108,7 @@
             .catch(error => {
                 console.error(error);
                 loader.style.display = 'none';
-                statusMessage.textContent = 'An error occurred during verification. Please try again later.';
+                statusMessage.textContent = `An error occurred during verification. Please try again later. (${error})`;
                 verifyBtn.disabled = false;
             });
         });
