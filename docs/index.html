@@ -1,198 +1,878 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- SEO Meta Tags -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="DocLockBox: Your ultra-secure, private vault for passwords and documents — encrypted, keyword-searchable, and cloud-synced on your terms.">
+<meta name="keywords" content="secure document vault, encrypted file storage, offline password manager, privacy-first app, secure file sharing, zero cloud storage, keyword tagging vault">
+<meta name="author" content="DocLockBox Team">
+
+<!-- Open Graph for Facebook/LinkedIn -->
+<meta property="og:title" content="DocLockBox | Lock Down Your Digital Life">
+<meta property="og:description" content="The most secure, encrypted document and password vault with smart tagging, offline keyword search, and zero cloud exposure.">
+<meta property="og:image" content="https://doclockbox.app/assets/preview.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://doclockbox.app">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="DocLockBox | Lock Down Your Digital Life">
+<meta name="twitter:description" content="The most secure, encrypted document and password vault with smart tagging, offline keyword search, and zero cloud exposure.">
+<meta name="twitter:image" content="https://doclockbox.app/assets/preview.png">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="DocLockBox: Your ultra-secure, private vault for passwords and documents — encrypted, keyword-searchable, and cloud-synced on your terms.">
   <title>DocLockBox | Lock Down Your Digital Life</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
+    :root {
+      /* Professional color scheme */
+      --primary: #2c5aa0;
+      --primary-light: #3d6bb5;
+      --primary-dark: #1e3f73;
+      --secondary: #64748b;
+      --accent: #0f766e;
+      --accent-light: #14b8a6;
+      
+      --bg-primary: #fafafa;
+      --bg-secondary: #ffffff;
+      --bg-tertiary: #f8fafc;
+      --bg-card: #ffffff;
+      
+      --border-primary: #e2e8f0;
+      --border-secondary: #cbd5e1;
+      
+      --text-primary: #1e293b;
+      --text-secondary: #475569;
+      --text-muted: #64748b;
+      --text-light: #94a3b8;
+      
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+      --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: 'Inter', sans-serif;
-      margin: 0;
-      background: #f0f5f9;
-      color: #2d3748;
+      font-family: 'Source Sans 3', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
       line-height: 1.6;
+      overflow-x: hidden;
     }
+
+    /* Header styles */
     header {
-      background: linear-gradient(135deg, #1a202c, #2b6cb0);
-      color: white;
-      padding: 3.5rem 2rem;
+      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 50%, var(--primary-light) 100%);
+      padding: 8rem 2rem 6rem;
       text-align: center;
+      position: relative;
+      color: white;
     }
-    header h1 {
-      margin: 0;
-      font-size: 3rem;
-      font-weight: 800;
+
+    header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grid)"/></svg>');
     }
-    header p {
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: -0.02em;
+    }
+
+    .hero-title {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+
+    .hero-subtitle {
       font-size: 1.25rem;
-      margin-top: 1rem;
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: 2rem;
+      font-weight: 400;
       max-width: 600px;
       margin-left: auto;
       margin-right: auto;
     }
-    .cta-button {
-      background-color: #ff5c5c;
-      color: white;
-      padding: 0.9rem 1.75rem;
-      font-size: 1.1rem;
-      border: none;
-      border-radius: 10px;
-      margin-top: 2rem;
-      cursor: pointer;
-      text-decoration: none;
-      display: inline-block;
-      transition: background-color 0.3s ease;
-    }
-    .cta-button:hover {
-      background-color: #e53e3e;
-    }
-    .section {
-      padding: 4rem 2rem;
-      max-width: 1000px;
-      margin: 0 auto;
-    }
-    .features {
-      display: flex;
-      flex-direction: column;
-      gap: 2.5rem;
-    }
-    .feature {
-      background: white;
-      padding: 2rem;
-      border-radius: 16px;
-      box-shadow: 0 4px 18px rgba(0,0,0,0.06);
-    }
-    .feature h3 {
-      margin-top: 0;
-      color: #2b6cb0;
-    }
-    .qr-section {
+
+    .stats-row {
       display: flex;
       justify-content: center;
       gap: 3rem;
-      margin-top: 2rem;
+      margin: 3rem 0;
       flex-wrap: wrap;
     }
-    .qr-item {
+
+    .stat-item {
       text-align: center;
     }
-    .qr-item img {
-      width: 140px;
-      height: 140px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      transition: transform 0.3s ease;
+
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+      display: block;
+      color: var(--accent-light);
     }
-    .qr-item img:hover {
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.8);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .cta-primary {
+      background: var(--accent);
+      color: white;
+      padding: 1rem 2.5rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .cta-primary:hover {
+      background: var(--accent-light);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-xl);
+    }
+
+    .cta-secondary {
+      background: transparent;
+      color: white;
+      padding: 1rem 2rem;
+      font-size: 1rem;
+      font-weight: 500;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
+      margin-left: 1rem;
+    }
+
+    .cta-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.5);
+    }
+
+    /* Main content */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .section {
+      padding: 6rem 0;
+      position: relative;
+    }
+
+    .section-title {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 1rem;
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
+    }
+
+    .section-subtitle {
+      text-align: center;
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+      margin-bottom: 4rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Problem section */
+    .problem-section {
+      background: var(--bg-card);
+      border-radius: 16px;
+      padding: 4rem;
+      border: 1px solid var(--border-primary);
+      margin-bottom: 4rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .problem-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .problem-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1.5rem;
+      background: var(--bg-tertiary);
+      border-radius: 12px;
+      border: 1px solid var(--border-primary);
+    }
+
+    .problem-icon {
+      font-size: 2rem;
+      color: #dc2626;
+      margin-top: 0.2rem;
+    }
+
+    .problem-title {
+      color: #dc2626;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    /* Features grid */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 2rem;
+      margin-bottom: 4rem;
+    }
+
+    .feature-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-primary);
+      border-radius: 16px;
+      padding: 2.5rem;
+      transition: all 0.2s ease;
+      box-shadow: var(--shadow-md);
+    }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-xl);
+      border-color: var(--primary-light);
+    }
+
+    .feature-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1.5rem;
+      display: block;
+    }
+
+    .feature-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--text-primary);
+    }
+
+    .feature-desc {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    /* Use cases section */
+    .use-cases {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+    .apple-logo {
+ 	 width: 60px;
+  	height: 60px;
+  	margin: 1rem 0;
+  	filter: grayscale(100%);
+    }
+
+    .use-case {
+      background: var(--bg-card);
+      padding: 2rem;
+      border-radius: 16px;
+      border: 1px solid var(--border-primary);
+      text-align: center;
+      transition: all 0.2s ease;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .use-case:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .use-case-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .use-case-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+    }
+
+    .use-case-desc {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+    }
+
+    /* Benefits section */
+    .benefits {
+      background: var(--bg-card);
+      border-radius: 16px;
+      padding: 4rem;
+      border: 1px solid var(--border-primary);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .benefits-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .benefit-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .benefit-icon {
+      font-size: 1.5rem;
+      color: var(--accent);
+      margin-top: 0.2rem;
+    }
+
+    .benefit-text {
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    /* Comparison table */
+    .comparison {
+      background: var(--bg-card);
+      border-radius: 16px;
+      padding: 4rem;
+      border: 1px solid var(--border-primary);
+      box-shadow: var(--shadow-sm);
+      overflow-x: auto;
+    }
+
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 2rem;
+    }
+
+    .comparison-table th,
+    .comparison-table td {
+      padding: 1rem;
+      text-align: center;
+      border-bottom: 1px solid var(--border-primary);
+    }
+
+    .comparison-table th {
+      background: var(--bg-tertiary);
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .comparison-table td {
+      color: var(--text-secondary);
+    }
+
+    .check {
+      color: var(--accent);
+      font-size: 1.2rem;
+    }
+
+    .cross {
+      color: #dc2626;
+      font-size: 1.2rem;
+    }
+
+    /* Download section */
+    .download-section {
+      text-align: center;
+      background: var(--bg-card);
+      border-radius: 16px;
+      padding: 4rem;
+      border: 1px solid var(--border-primary);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .download-grid {
+      display: flex;
+      justify-content: center;
+      gap: 6rem;
+      margin-top: 3rem;
+      flex-wrap: wrap;
+    }
+
+    .download-item {
+      text-align: center;
+      transition: transform 0.2s ease;
+    }
+
+    .download-item:hover {
       transform: scale(1.05);
     }
-    .platform-label {
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-      font-size: 1.1rem;
-      color: #4a5568;
+
+    .platform-name {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--text-primary);
     }
-    footer {
-      text-align: center;
+
+    .qr-placeholder {
+      width: 160px;
+      height: 160px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      color: white;
+      margin: 0 auto 1rem;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .download-link {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
       font-size: 0.9rem;
-      padding: 2rem;
-      color: #718096;
-      background: #edf2f7;
     }
+
+    .download-link:hover {
+      color: var(--primary-light);
+    }
+
+    /* Footer */
+    footer {
+      background: var(--bg-card);
+      border-top: 1px solid var(--border-primary);
+      padding: 3rem 0;
+      text-align: center;
+      color: var(--text-muted);
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+      header {
+        padding: 6rem 1rem 4rem;
+      }
+
+      .stats-row {
+        gap: 1.5rem;
+      }
+
+      .cta-secondary {
+        margin-left: 0;
+        margin-top: 1rem;
+      }
+
+      .section {
+        padding: 4rem 0;
+      }
+
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .benefits, .problem-section, .comparison, .download-section {
+        padding: 2rem;
+        border-radius: 12px;
+      }
+
+      .download-grid {
+        gap: 2rem;
+      }
+    }
+
+    /* Smooth scrolling */
+    html {
+      scroll-behavior: smooth;
+    }
+
+    /* Loading animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .feature-card {
+      animation: fadeInUp 0.5s ease forwards;
+    }
+
+    .feature-card:nth-child(1) { animation-delay: 0.1s; }
+    .feature-card:nth-child(2) { animation-delay: 0.2s; }
+    .feature-card:nth-child(3) { animation-delay: 0.3s; }
+    .feature-card:nth-child(4) { animation-delay: 0.4s; }
+    .feature-card:nth-child(5) { animation-delay: 0.5s; }
+    .feature-card:nth-child(6) { animation-delay: 0.6s; }
   </style>
 </head>
 <body>
   <header>
-    <h1>DocLockBox</h1>
-    <p>The Safest Place for Your Secrets — Passwords, Documents, and Everything In Between</p>
-    <a href="#get-started" class="cta-button">🔐 Get Early Access</a>
+    <div class="hero-content">
+      <div class="logo">
+        🔐 DocLockBox
+      </div>
+      <h1 class="hero-title">Lock Down Your Digital Life</h1>
+      <p class="hero-subtitle">The ultra-secure, private vault for passwords and documents — encrypted, keyword-searchable, and cloud-synced on your terms.</p>
+      
+      <div class="stats-row">
+        <div class="stat-item">
+          <span class="stat-number">256-bit</span>
+          <span class="stat-label">Encryption</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">2</span>
+          <span class="stat-label">Platforms</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">100%</span>
+          <span class="stat-label">Local Control</span>
+        </div>
+      </div>
+
+      <div>
+        <a href="#get-started" class="cta-primary">
+          🚀 Get Early Access
+        </a>
+        <a href="#features" class="cta-secondary">
+          Learn More
+        </a>
+      </div>
+    </div>
   </header>
 
-  <section class="section">
-    <h2 style="text-align:center; color:#2c5282; font-size: 2rem;">🚀 Why People Trust DocLockBox</h2>
-    <div class="features">
-      <div class="feature">
-        <h3>🛡️ 100% Encrypted, Always Local</h3>
-        <p>Your files, your control. Everything stays encrypted on your device — never stored raw, never exposed.</p>
+  <main>
+    <!-- Problem Section -->
+    <section class="section">
+      <div class="container">
+        <div class="problem-section">
+          <h2 class="section-title" style="color: #dc2626;">The Digital Privacy Crisis</h2>
+          <p class="section-subtitle">Your personal data is under attack from every angle. It's time to fight back.</p>
+          
+          <div class="problem-grid">
+            <div class="problem-item">
+              <span class="problem-icon">🎯</span>
+              <div>
+                <h4 class="problem-title">Data Breaches Everywhere</h4>
+                <p style="color: var(--text-secondary);">Major companies lose millions of user records daily. Your passwords and documents aren't safe in their hands.</p>
+              </div>
+            </div>
+            <div class="problem-item">
+              <span class="problem-icon">👁️</span>
+              <div>
+                <h4 class="problem-title">Constant Surveillance</h4>
+                <p style="color: var(--text-secondary);">Cloud services scan your files for "safety" - but who's watching the watchers?</p>
+              </div>
+            </div>
+            <div class="problem-item">
+              <span class="problem-icon">🤖</span>
+              <div>
+                <h4 class="problem-title">AI Training on Your Data</h4>
+                <p style="color: var(--text-secondary);">Your private documents become training data for AI models without your consent.</p>
+              </div>
+            </div>
+            <div class="problem-item">
+              <span class="problem-icon">🗂️</span>
+              <div>
+                <h4 class="problem-title">Digital Chaos</h4>
+                <p style="color: var(--text-secondary);">Passwords scattered across apps, documents buried in folders - you can't find what you need when you need it.</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="feature">
-        <h3>🔍 Lightning-Fast Keyword Search</h3>
-        <p>Find what you need instantly using smart tags and keywords — no AI or cloud processing needed.</p>
-      </div>
-      <div class="feature">
-        <h3>☁️ Private Cloud Sync (Your Way)</h3>
-        <p>Back up your encrypted vault temporarily to the cloud — fully optional and under your control.</p>
-      </div>
-      <div class="feature">
-        <h3>🔗 Secure, Expiring Sharing</h3>
-        <p>Send encrypted docs or passwords that self-destruct after a set time or view limit — just like mission impossible.</p>
-      </div>
-    <h2 style="color: #2c5282; font-size: 1.75rem; padding-top: 2rem;">🔐 Secure Sharing, On Your Terms</h2>
-      <p>
-        Ever needed to share a document but worried it might linger forever on someone else’s device or in the cloud? With DocLockBox, you can share sensitive documents or passwords in an encrypted, time-bound fashion. Set expiration timers, view limits, or single-use links — your data disappears when you want it to.
-      </p>
-      <p>
-        This isn't just sharing. It’s **smart sharing** for the privacy-first world. No leaks, no accidental forwards, no surprises.
-      </p>
-      <h2 style="color: #2c5282; font-size: 1.75rem; padding-top: 2rem;">🔥 Take Control of Your Digital Footprint</h2>
-      <p>
-        DocLockBox isn’t just another app. It’s a movement — toward reclaiming your digital independence. In an era where every click and file upload can be tracked, your personal data deserves a **vault, not a server**.
-      </p>
-      <p>
-        Whether you’re organizing your most important life documents, backing up passwords securely, or just looking for a smarter way to manage digital chaos — DocLockBox gives you **peace of mind with power**.
-      </p>
-      <p style="font-weight: bold; font-size: 1.2rem; padding-top: 1rem; color: #2c5282;">
-        ✅ No raw files in the cloud.  
-        ✅ No third-party tracking.  
-        ✅ Just your files. Your rules. Your vault.
-      </p>
+    </section>
 
+    <!-- Features Section -->
+    <section id="features" class="section">
+      <div class="container">
+        <h2 class="section-title">Your Digital Fortress</h2>
+        <p class="section-subtitle">Built for privacy-conscious individuals who refuse to compromise on security</p>
+        
+        <div class="features-grid">
+          <div class="feature-card">
+            <span class="feature-icon">🛡️</span>
+            <h3 class="feature-title">Military-Grade Encryption</h3>
+            <p class="feature-desc">AES-256 encryption keeps your data safe from hackers, governments, and corporations. Your files stay encrypted on your device — never stored raw, never exposed.</p>
+          </div>
+          
+          <div class="feature-card">
+            <span class="feature-icon">⚡</span>
+            <h3 class="feature-title">Lightning-Fast Search</h3>
+            <p class="feature-desc">Find any document or password instantly using smart tags and keywords. No AI scanning, no cloud processing — just blazing-fast local search that works offline.</p>
+          </div>
+          
+          <div class="feature-card">
+            <span class="feature-icon">☁️</span>
+            <h3 class="feature-title">Optional Encrypted Backup</h3>
+            <p class="feature-desc">Your choice to backup encrypted vault to cloud storage. Even we can't see your data — the encryption keys never leave your device.</p>
+          </div>
+          
+          <div class="feature-card">
+            <span class="feature-icon">🔗</span>
+            <h3 class="feature-title">Self-Destructing Shares</h3>
+            <p class="feature-desc">Share encrypted documents or passwords that automatically delete after time limits or view counts. No permanent traces, no accidental leaks.</p>
+          </div>
+
+          <div class="feature-card">
+            <span class="feature-icon">🔄</span>
+            <h3 class="feature-title">Cross-Platform Sync</h3>
+            <p class="feature-desc">Access your vault on all your devices with end-to-end encryption. Your data syncs securely without ever being readable by anyone but you.</p>
+          </div>
+          
+          <div class="feature-card">
+            <span class="feature-icon">🎭</span>
+            <h3 class="feature-title">Zero-Knowledge Architecture</h3>
+            <p class="feature-desc">We literally cannot access your data even if we wanted to. True zero-knowledge means your privacy is mathematically guaranteed.</p>
+          </div>
+        </div>
       </div>
-    <div style="max-width: 900px; margin: 0 auto; text-align: left; font-size: 1.1rem; color: #2d3748; padding-top: 2rem;">
-      <h2 style="color: #2c5282; font-size: 1.75rem;">🧠 Why It Matters More Than Ever</h2>
-      <p>
-        In a world where AI tools can scan, summarize, and generate content instantly, your private documents are more valuable — and vulnerable — than ever. Whether it’s your tax forms, contracts, or passwords, even a minor data breach could have lasting consequences.
-      </p>
-      <p>
-        DocLockBox helps you stay ahead. It empowers you to take control of your digital life with an ultra-secure, locally encrypted vault that’s built to work *without the internet*. AI is powerful — but your documents should stay private. Always.
-      </p>
-      <h2 style="color: #2c5282; font-size: 1.75rem; padding-top: 1.5rem;">📁 Effortless Organization & Search</h2>
-      <p>
-        Forget messy folders and filenames you can't remember. With DocLockBox, every document or password entry can be tagged with smart keywords. Need to find your lease agreement or Wi-Fi credentials? Just search by keyword — it's instant, even offline.
-      </p>
-      <p>
-        Organize your digital life the way you want: clean, searchable, and securely encrypted. DocLockBox keeps your private world in order — without any third-party snooping or accidental cloud syncs.
-      </p>
+    </section>
+
+    <!-- Use Cases Section -->
+    <section class="section">
+      <div class="container">
+        <h2 class="section-title">Perfect For Every Privacy Need</h2>
+        <p class="section-subtitle">From personal documents to business secrets — DocLockBox adapts to your life</p>
+        
+        <div class="use-cases">
+          <div class="use-case">
+            <div class="use-case-icon">💼</div>
+            <div class="use-case-title">Business Professionals</div>
+            <div class="use-case-desc">Contracts, NDAs, financial documents — keep your business secrets truly secret</div>
+          </div>
+          <div class="use-case">
+            <div class="use-case-icon">🏠</div>
+            <div class="use-case-title">Personal Documents</div>
+            <div class="use-case-desc">Birth certificates, insurance papers, tax returns — organize your life securely</div>
+          </div>
+          <div class="use-case">
+            <div class="use-case-icon">💳</div>
+            <div class="use-case-title">Password Management</div>
+            <div class="use-case-desc">Store and organize all your passwords with military-grade security</div>
+          </div>
+          <div class="use-case">
+            <div class="use-case-icon">👨‍💻</div>
+            <div class="use-case-title">Developers & Creators</div>
+            <div class="use-case-desc">API keys, source code, creative works — protect your intellectual property</div>
+          </div>
+          <div class="use-case">
+            <div class="use-case-icon">🏥</div>
+            <div class="use-case-title">Healthcare Records</div>
+            <div class="use-case-desc">Medical documents, prescriptions, insurance info — HIPAA-level privacy</div>
+          </div>
+          <div class="use-case">
+            <div class="use-case-icon">🎓</div>
+            <div class="use-case-title">Students & Researchers</div>
+            <div class="use-case-desc">Thesis drafts, research data, academic credentials — secure your future</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section class="section">
+      <div class="container">
+        <div class="benefits">
+          <h2 class="section-title">Why Choose DocLockBox?</h2>
+          <div class="benefits-list">
+            <div class="benefit-item">
+              <span class="benefit-icon">✓</span>
+              <span class="benefit-text">No hidden fees</span>
+            </div>
+            <div class="benefit-item">
+              <span class="benefit-icon">✓</span>
+              <span class="benefit-text">Works completely offline when needed</span>
+            </div>
+            <div class="benefit-item">
+              <span class="benefit-icon">✓</span>
+              <span class="benefit-text">Built on trusted open-source crypto libraries</span>
+            </div>
+<!--
+            <div class="benefit-item">
+              <span class="benefit-icon">✓</span>
+              <span class="benefit-text">Regular security audits by third parties</span>
+            </div>
+-->
+            <div class="benefit-item">
+              <span class="benefit-icon">✓</span>
+              <span class="benefit-text">Instant setup - no complex configuration</span>
+            </div>
+            <div class="benefit-item">
+              <span class="benefit-icon">✓</span>
+              <span class="benefit-text">Export your data anytime, no lock-in</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Comparison Section -->
+    <section class="section">
+      <div class="container">
+        <div class="comparison">
+          <h2 class="section-title">DocLockBox vs. The Competition</h2>
+          <table class="comparison-table">
+            <thead>
+              <tr>
+                <th>Feature</th>
+                <th>DocLockBox</th>
+                <th>LastPass</th>
+                <th>1Password</th>
+                <th>Google Drive</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Zero-Knowledge Encryption</td>
+                <td><span class="check">✓</span></td>
+                <td><span class="cross">✗</span></td>
+                <td><span class="check">✓</span></td>
+                <td><span class="cross">✗</span></td>
+              </tr>
+              <tr>
+                <td>Local-First Storage</td>
+                <td><span class="check">✓</span></td>
+                <td><span class="cross">✗</span></td>
+                <td><span class="cross">✗</span></td>
+                <td><span class="cross">✗</span></td>
+              </tr>
+              <tr>
+                <td>Document Storage</td>
+                <td><span class="check">✓</span></td>
+                <td><span class="cross">✗</span></td>
+                <td><span class="check">✓</span></td>
+                <td><span class="check">✓</span></td>
+              </tr>
+              <tr>
+                <td>Offline Access</td>
+                <td><span class="check">✓</span></td>
+                <td><span class="cross">✗</span></td>
+                <td><span class="cross">✗</span></td>
+                <td><span class="check">✓</span></td>
+              </tr>
+              <tr>
+                <td>Self-Destructing Shares</td>
+                <td><span class="check">✓</span></td>
+                <td><span class="cross">✗</span></td>
+                <td><span class="cross">✗</span></td>
+                <td><span class="cross">✗</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Download Section -->
+    <section id="get-started" class="section">
+      <div class="container">
+        <div class="download-section">
+          <h2 class="section-title">Get Early Access</h2>
+          <p class="section-subtitle">Available for macOS and iOS - bringing premium security to your Apple devices.</p>
+<!--          
+          <div class="download-grid">
+            <div class="download-item">
+
+              <div class="platform-name">macOS</div>
+              <div class="qr-placeholder">🍎</div>
+              <a href="https://apps.apple.com/us/app/doclockbox/id6745210908" target="_blank" class="download-link">Download for Mac</a>
+            </div>
+            <div class="download-item">
+              <div class="platform-name">iOS</div>
+              <div class="qr-placeholder">📱</div>
+              <a href="https://apps.apple.com/us/app/doclockbox/id6745210908" target="_blank" class="download-link">Download from App Store</a>
+            </div>
+          </div>
+-->
+<div class="download-grid">
+  <a href="https://apps.apple.com/us/app/doclockbox/id6745210908" target="_blank" class="download-item-link">
+    <div class="download-item">
+      <div class="platform-name">macOS</div>
+<div class="qr-placeholder">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple Logo" class="apple-logo">
+</div>
+      <div class="download-link">Download for Mac</div>
     </div>
-
-    <h2 style="color:#2c5282; font-size: 2rem;">📦 Download Now</h2>
-    <div class="qr-section">
-      <div class="qr-item">
-        <p class="platform-label">iOS</p>
-        <a href="https://apps.apple.com/us/app/doclockbox/id6745210908" target="_blank">
-          <img src="./ios_qr.png" alt="Download for iOS">
-        </a>
-      </div>
-      <div class="qr-item">
-        <p class="platform-label">macOS</p>
-        <a href="https://apps.apple.com/us/app/doclockbox/id6745210908" target="_blank">
-          <img src="./macos_qr.png" alt="Download for macOS">
-        </a>
-      </div>
+  </a>
+  <a href="https://apps.apple.com/us/app/doclockbox/id6745210908" target="_blank" class="download-item-link">
+    <div class="download-item">
+      <div class="platform-name">iOS</div>
+      <div class="qr-placeholder">📱</div>
+      <div class="download-link">Download from App Store</div>
     </div>
-  </section>
-
-  <section class="section" style="text-align:center;">
-    <h2 id="get-started" style="color:#2c5282; font-size: 2rem;">✨ Join the Privacy Revolution</h2>
-    <p style="font-size:1.2rem; max-width: 700px; margin: auto;">Protect your most sensitive data with the simplicity and power of DocLockBox. No cloud exposure. No tracking. Just pure encrypted peace of mind.</p>
-    <a href="mailto:mydoxbox3@gmail.com" class="cta-button">📩 Request Access</a>
-  </section>
+  </a>
+</div>
+        </div>
+      </div>
+    </section>
+  </main>
 
   <footer>
-    &copy; 2025 DocLockBox — Where Privacy Meets Simplicity.
+    <div class="footer-content">
+      <p>© 2025 DocLockBox — Where Privacy Meets Simplicity.</p>
+    </div>
   </footer>
 </body>
 </html>
-
