@@ -1,124 +1,199 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DocLockBox - Secure Document Vault</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
-        header {
-            background: #1a1a1a;
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
-        .container {
-            padding: 40px;
-            max-width: 900px;
-            margin: auto;
-            background: white;
-        }
-        h2 {
-            color: #333;
-        }
-        h1 {
-    font-size: 2.5em;
-    font-weight: 700;
-    text-align: center;
-    margin-top: 20px;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.15); /* optional */
-}
-        .qr-section {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            margin-top: 30px;
-        }
-        .qr-section img {
-            width: 160px;
-            height: 160px;
-        }
-        footer {
-            text-align: center;
-            font-size: 12px;
-            margin: 40px 0 20px;
-            color: #666;
-        }
-        a {
-            color: #007aff;
-            text-decoration: none;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="DocLockBox: Your ultra-secure, private vault for passwords and documents — encrypted, keyword-searchable, and cloud-synced on your terms.">
+  <title>DocLockBox | Lock Down Your Digital Life</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      background: #f0f5f9;
+      color: #2d3748;
+      line-height: 1.6;
+    }
+    header {
+      background: linear-gradient(135deg, #1a202c, #2b6cb0);
+      color: white;
+      padding: 3.5rem 2rem;
+      text-align: center;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 3rem;
+      font-weight: 800;
+    }
+    header p {
+      font-size: 1.25rem;
+      margin-top: 1rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .cta-button {
+      background-color: #ff5c5c;
+      color: white;
+      padding: 0.9rem 1.75rem;
+      font-size: 1.1rem;
+      border: none;
+      border-radius: 10px;
+      margin-top: 2rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: background-color 0.3s ease;
+    }
+    .cta-button:hover {
+      background-color: #e53e3e;
+    }
+    .section {
+      padding: 4rem 2rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .features {
+      display: flex;
+      flex-direction: column;
+      gap: 2.5rem;
+    }
+    .feature {
+      background: white;
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.06);
+    }
+    .feature h3 {
+      margin-top: 0;
+      color: #2b6cb0;
+    }
+    .qr-section {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+    .qr-item {
+      text-align: center;
+    }
+    .qr-item img {
+      width: 140px;
+      height: 140px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease;
+    }
+    .qr-item img:hover {
+      transform: scale(1.05);
+    }
+    .platform-label {
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+      color: #4a5568;
+    }
+    footer {
+      text-align: center;
+      font-size: 0.9rem;
+      padding: 2rem;
+      color: #718096;
+      background: #edf2f7;
+    }
+  </style>
 </head>
 <body>
-    <header>
-        <h1>DocLockBox</h1>
-        <p>Your Secure Vault for Personal & Family Documents</p>
-    </header>
-    <div class="container">
-        <h2>🔐 Why DocLockBox?</h2>
-        <p>DocLockBox is a private, encrypted vault designed to safeguard your most important personal and family documents using best-in-class AES-256 encryption, applied individually to every file.</p>
-        <p>Unlike cloud-based services, DocLockBox keeps your documents <strong>100% local</strong> — no internet sync, no external servers, no compromises.</p>
+  <header>
+    <h1>DocLockBox</h1>
+    <p>The Safest Place for Your Secrets — Passwords, Documents, and Everything In Between</p>
+    <a href="#get-started" class="cta-button">🔐 Get Early Access</a>
+  </header>
 
-        <h2>✨ Key Features</h2>
-        <ul>
-            <li>AES-256 encrypted vault – Each file is individually secured</li>
-            <li>Smart keyword tagging – Quickly find documents</li>
-            <li>Biometric unlock – Face ID / Touch ID support</li>
-            <li>Key rotation & passphrase change</li>
-            <li>Passphrase recovery using Firebase verification</li>
-            <li>Built-in password manager</li>
-            <li>Clean, ad-free design</li>
-        </ul>
+  <section class="section">
+    <h2 style="text-align:center; color:#2c5282; font-size: 2rem;">🚀 Why People Trust DocLockBox</h2>
+    <div class="features">
+      <div class="feature">
+        <h3>🛡️ 100% Encrypted, Always Local</h3>
+        <p>Your files, your control. Everything stays encrypted on your device — never stored raw, never exposed.</p>
+      </div>
+      <div class="feature">
+        <h3>🔍 Lightning-Fast Keyword Search</h3>
+        <p>Find what you need instantly using smart tags and keywords — no AI or cloud processing needed.</p>
+      </div>
+      <div class="feature">
+        <h3>☁️ Private Cloud Sync (Your Way)</h3>
+        <p>Back up your encrypted vault temporarily to the cloud — fully optional and under your control.</p>
+      </div>
+      <div class="feature">
+        <h3>🔗 Secure, Expiring Sharing</h3>
+        <p>Send encrypted docs or passwords that self-destruct after a set time or view limit — just like mission impossible.</p>
+      </div>
+    <h2 style="color: #2c5282; font-size: 1.75rem; padding-top: 2rem;">🔐 Secure Sharing, On Your Terms</h2>
+      <p>
+        Ever needed to share a document but worried it might linger forever on someone else’s device or in the cloud? With DocLockBox, you can share sensitive documents or passwords in an encrypted, time-bound fashion. Set expiration timers, view limits, or single-use links — your data disappears when you want it to.
+      </p>
+      <p>
+        This isn't just sharing. It’s **smart sharing** for the privacy-first world. No leaks, no accidental forwards, no surprises.
+      </p>
+      <h2 style="color: #2c5282; font-size: 1.75rem; padding-top: 2rem;">🔥 Take Control of Your Digital Footprint</h2>
+      <p>
+        DocLockBox isn’t just another app. It’s a movement — toward reclaiming your digital independence. In an era where every click and file upload can be tracked, your personal data deserves a **vault, not a server**.
+      </p>
+      <p>
+        Whether you’re organizing your most important life documents, backing up passwords securely, or just looking for a smarter way to manage digital chaos — DocLockBox gives you **peace of mind with power**.
+      </p>
+      <p style="font-weight: bold; font-size: 1.2rem; padding-top: 1rem; color: #2c5282;">
+        ✅ No raw files in the cloud.  
+        ✅ No third-party tracking.  
+        ✅ Just your files. Your rules. Your vault.
+      </p>
 
-        <h2>📦 Download Now</h2>
-         <div class="qr-section">
-          <div class="qr-item">
-              <p class="platform-label">iOS</p>
-              <a href="https://apps.apple.com/us/app/doclockbox/id6745210908" target="_blank">
-                  <img src="./ios_qr.png" alt="Download for iOS">
-              </a>
-          </div>
-          <div class="qr-item">
-              <p class="platform-label">macOS</p>
-              <a href="https://apps.apple.com/us/app/doclockbox/id6745210908" target="_blank">
-                  <img src="./macos_qr.png" alt="Download for macOS">
-              </a>
-          </div>
-        </div>
-        <h2>📘 Learn More</h2>
-        <p><a href="./DocLockBox_Product_Guide.pdf" target="_blank">View High-Level Product Guide (PDF)</a></p>
-
-        <h2>📄 EULA</h2>
-        <p><a href="#eula">Read our End User License Agreement</a></p>
-
-        <h2 style="margin-top: 60px;" id="eula">📜 End User License Agreement (EULA)</h2>
-        <p><strong>Last Updated:</strong> April 26, 2025</p>
-        <p>Please read this End User License Agreement ("Agreement") carefully before using the DocLockBox application ("Application").</p>
-        <p>By using the Application, you agree to be bound by the terms of this Agreement.</p>
-        <ol>
-            <li><strong>License:</strong> Non-exclusive, personal, non-commercial use only.</li>
-            <li><strong>No Warranty:</strong> Provided "as is" without warranty of any kind.</li>
-            <li><strong>Limitation of Liability:</strong> No liability for indirect damages.</li>
-            <li><strong>Data Security:</strong> User is responsible for device and passphrase security.</li>
-            <li><strong>No Guarantee of Data Recovery:</strong> Passphrase loss may result in data loss.</li>
-            <li><strong>Updates:</strong> May be modified or discontinued without notice.</li>
-            <li><strong>Governing Law:</strong> California, USA.</li>
-            <li><strong>Contact:</strong> Use the in-app feedback form.</li>
-        </ol>
-
-        <p>By using DocLockBox, you agree to these terms.</p>
+      </div>
+      $1
+    <div style="max-width: 900px; margin: 0 auto; text-align: left; font-size: 1.1rem; color: #2d3748; padding-top: 2rem;">
+      <h2 style="color: #2c5282; font-size: 1.75rem;">🧠 Why It Matters More Than Ever</h2>
+      <p>
+        In a world where AI tools can scan, summarize, and generate content instantly, your private documents are more valuable — and vulnerable — than ever. Whether it’s your tax forms, contracts, or passwords, even a minor data breach could have lasting consequences.
+      </p>
+      <p>
+        DocLockBox helps you stay ahead. It empowers you to take control of your digital life with an ultra-secure, locally encrypted vault that’s built to work *without the internet*. AI is powerful — but your documents should stay private. Always.
+      </p>
+      <h2 style="color: #2c5282; font-size: 1.75rem; padding-top: 1.5rem;">📁 Effortless Organization & Search</h2>
+      <p>
+        Forget messy folders and filenames you can't remember. With DocLockBox, every document or password entry can be tagged with smart keywords. Need to find your lease agreement or Wi-Fi credentials? Just search by keyword — it's instant, even offline.
+      </p>
+      <p>
+        Organize your digital life the way you want: clean, searchable, and securely encrypted. DocLockBox keeps your private world in order — without any third-party snooping or accidental cloud syncs.
+      </p>
     </div>
 
-    <footer>
-        DocLockBox © 2025 – Lock it. Encrypt it. Own it.<br>
-        Hosted on <a href="https://github.com/" target="_blank">GitHub Pages</a>
-    </footer>
+    <h2 style="color:#2c5282; font-size: 2rem;">📦 Download Now</h2>
+    <div class="qr-section">
+      <div class="qr-item">
+        <p class="platform-label">iOS</p>
+        <a href="https://apps.apple.com/us/app/doclockbox/id6745210908" target="_blank">
+          <img src="./ios_qr.png" alt="Download for iOS">
+        </a>
+      </div>
+      <div class="qr-item">
+        <p class="platform-label">macOS</p>
+        <a href="https://apps.apple.com/us/app/doclockbox/id6745210908" target="_blank">
+          <img src="./macos_qr.png" alt="Download for macOS">
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="text-align:center;">
+    <h2 id="get-started" style="color:#2c5282; font-size: 2rem;">✨ Join the Privacy Revolution</h2>
+    <p style="font-size:1.2rem; max-width: 700px; margin: auto;">Protect your most sensitive data with the simplicity and power of DocLockBox. No cloud exposure. No tracking. Just pure encrypted peace of mind.</p>
+    <a href="mailto:mydoxbox3@gmail.com" class="cta-button">📩 Request Access</a>
+  </section>
+
+  <footer>
+    &copy; 2025 DocLockBox — Where Privacy Meets Simplicity.
+  </footer>
 </body>
 </html>
 
